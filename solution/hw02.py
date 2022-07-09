@@ -22,7 +22,9 @@ def num_eights(x):
     ...       ['Assign', 'AugAssign'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if x == 0:
+        return 0
+    return num_eights(x // 10) + (x % 10 == 8)
 
 
 def pingpong(n):
@@ -57,7 +59,16 @@ def pingpong(n):
     >>> check(HW_SOURCE_FILE, 'pingpong', ['Assign', 'AugAssign'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    def pingpong_helper(pingpong_value, index, direction):
+        """ A recursive helper function to calculate ping-pong value.
+            direction is either 1 or -1
+        """
+        if index == n:
+            return pingpong_value
+        if index % 8 == 0 or num_eights(index) > 0:
+            return pingpong_helper(pingpong_value - direction, index + 1, -direction)
+        return pingpong_helper(pingpong_value + direction, index + 1, direction)
+    return pingpong_helper(1, 1, 1)
 
 
 def missing_digits(n):
@@ -87,7 +98,9 @@ def missing_digits(n):
     >>> check(HW_SOURCE_FILE, 'missing_digits', ['While', 'For'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if n < 10:
+        return 0
+    return missing_digits(n // 10) + max(n % 10 - (n // 10) % 10 - 1, 0)
 
 
 def next_largest_coin(coin):
@@ -123,8 +136,15 @@ def count_coins(total):
     >>> check(HW_SOURCE_FILE, 'count_coins', ['While', 'For'])                                          
     True
     """
-    "*** YOUR CODE HERE ***"
-
+    def count_coins_helper(total, smallest_coin):
+        if total < 0 or smallest_coin == None:
+            return 0
+        if total == 0:
+            return 1
+        with_smallest = count_coins_helper(total - smallest_coin, smallest_coin)
+        without_smallest = count_coins_helper(total, next_largest_coin(smallest_coin))
+        return with_smallest + without_smallest
+    return count_coins_helper(total, 1)
 
 from operator import sub, mul
 
@@ -138,5 +158,5 @@ def make_anonymous_factorial():
     >>> check(HW_SOURCE_FILE, 'make_anonymous_factorial', ['Assign', 'AugAssign', 'FunctionDef', 'Recursion'])
     True
     """
-    return 'YOUR_EXPRESSION_HERE'
+    return (lambda f: lambda n: f(f, n))(lambda f, n: 1 if n == 1 else mul(n , f(f, sub(n, 1))))
 
